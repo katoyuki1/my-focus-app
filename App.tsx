@@ -12,7 +12,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
-  const [time, setTime] = useState(60);
+  const [time, setTime] = useState(1800);
   const [isRunning, setIsRunning] = useState(false);
   const [quote, setQuote] = useState("");
   const [newQuote, setNewQuote] = useState("");
