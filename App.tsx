@@ -10,6 +10,8 @@ import {
   SafeAreaView
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import "./global.css"
+import { Header } from "./components/Header";
 
 export default function App() {
   const [time, setTime] = useState(1800);
@@ -98,7 +100,9 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView
+     style={styles.safeArea}>
+      <Header />
       <View style={styles.container}>
         <Text style={styles.timer}>{time}秒</Text>
         <Text style={styles.quote}>{quote}</Text>
