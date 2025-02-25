@@ -1,13 +1,15 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FocusApp } from "./components/FocusApp";
-import "./global.css"
+import React from "react"; // React は コンポーネント（画面）を作成するためのライブラリ.React を import しないと React Native のコンポーネントを作れない
+import { NavigationContainer } from "@react-navigation/native"; // 役割: アプリ全体のナビゲーション（画面遷移）を管理
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // これを使うと、アプリの下にタブメニューを表示できる
+import { FocusApp } from "./components/FocusApp"; // FocusApp.tsx で作った UI を、App.tsx で使うために import している.コンポーネント とは？ → 画面の部品（UIのパーツ）
+import "./global.css" // React Native では通常 CSS は使わないが、nativewind などのツールを使う場合は global.css を読み込むこともある
 
+// タブナビゲーションを作成
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
+    // この中にタブメニューや画面の設定を入れる
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Home" component={FocusApp} options={{ headerShown: false }} />
