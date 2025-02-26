@@ -36,3 +36,4 @@ yarn-error.*
 *.tsbuildinfo
 
 develop_history.txt
+release_step.txt
