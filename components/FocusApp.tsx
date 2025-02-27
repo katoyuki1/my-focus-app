@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, SafeAreaView, Text } from "react-native";
 import { Header } from "./Header";
 import { TimerDisplay } from "./TimerDisplay";
@@ -8,8 +8,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const FocusApp = () => {
   const { formattedTime, isActive, startTimer, stopTimer } = useTimer();
-  const [quote, setQuote] = useState(""); // 表示する名言
-  const [customQuotes, setCustomQuotes] = useState<string[]>([]); // ユーザーが追加した名言
+  const [quote, setQuote] = useState("");
+  const [customQuotes, setCustomQuotes] = useState<string[]>([]);
+  const [allQuotes, setAllQuotes] = useState<string[]>([]);
+  const quoteTimerRef = useRef<NodeJS.Timeout | null>(null); // 🔹 タイマー管理用
 
   const defaultQuotes = [
     "心が変われば行動が変わる",
@@ -22,9 +24,20 @@ export const FocusApp = () => {
     const loadQuotes = async () => {
       try {
         const storedQuotes = await AsyncStorage.getItem("customQuotes");
-        console.log("Stored Quotes:", storedQuotes); // 🔍 デバッグ
+        console.log("🔍 Stored Quotes from AsyncStorage:", storedQuotes);
+
+        let parsedQuotes: string[] = [];
         if (storedQuotes) {
-          setCustomQuotes(JSON.parse(storedQuotes));
+          parsedQuotes = JSON.parse(storedQuotes);
+        }
+
+        const updatedQuotes = [...defaultQuotes, ...parsedQuotes];
+        setCustomQuotes(parsedQuotes);
+        setAllQuotes(updatedQuotes);
+        console.log("🔍 All Quotes (merged):", updatedQuotes);
+
+        if (updatedQuotes.length > 0) {
+          setQuote(updatedQuotes[0]); // 最初の名言を表示
         }
       } catch (error) {
         console.error("名言の読み込みに失敗:", error);
@@ -33,53 +46,59 @@ export const FocusApp = () => {
     loadQuotes();
   }, []);
 
-  // タイマーが動作している間、10秒ごとに名言を変更
+  // 🔹 **名言の変更ロジック**
   useEffect(() => {
-    let quoteTimer: NodeJS.Timeout;
-    if (isActive) {
-      setQuote(defaultQuotes[0]); // 🔹 タイマー開始時にデフォルトの名言を表示
+    if (!isActive || allQuotes.length === 0) return; // タイマーが動いていなければ何もしない
 
-      quoteTimer = setInterval(() => {
-        const allQuotes = [...defaultQuotes, ...customQuotes];
-        if (allQuotes.length > 0) {
-          const randomIndex = Math.floor(Math.random() * allQuotes.length);
-          setQuote(allQuotes[randomIndex]);
-        }
-      }, 10000);
+    console.log("🚀 Timer Started - Showing first quote:", quote);
+
+    // 既存のタイマーをクリア
+    if (quoteTimerRef.current) {
+      clearInterval(quoteTimerRef.current);
     }
-    return () => clearInterval(quoteTimer);
-  }, [isActive, customQuotes]);
+
+    // 新しいタイマーを開始
+    quoteTimerRef.current = setInterval(() => {
+      setQuote((prevQuote) => {
+        const newQuote = allQuotes[Math.floor(Math.random() * allQuotes.length)];
+        console.log("🔄 Changing Quote to:", newQuote);
+        return newQuote;
+      });
+    }, 10000); // 10秒ごとに更新
+
+    return () => {
+      if (quoteTimerRef.current) {
+        clearInterval(quoteTimerRef.current);
+        console.log("🛑 Quote Timer Stopped");
+      }
+    };
+  }, [isActive]); // `isActive` のみを監視
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Header />
-        {/* タイマーの表示 */}
         <TimerDisplay
           time={formattedTime}
           isActive={isActive}
-          onStart={startTimer}
-          onStop={stopTimer}
+          onStart={() => {
+            console.log("🎯 Start Timer Pressed");
+            startTimer();
+          }}
+          onStop={() => {
+            console.log("🛑 Stop Timer Pressed");
+            stopTimer();
+          }}
         />
         {/* 🔹 名言を適切に表示する */}
-        <Text
-          style={{
-            fontSize: 18,
-            fontStyle: "italic",
-            textAlign: "center",
-            marginVertical: 20,
-            color: "#555",
-          }}
-        >
+        <Text style={{ fontSize: 18, fontStyle: "italic", textAlign: "center", marginVertical: 20, color: "#555" }}>
           {quote}
         </Text>
       </View>
-      {/* タブバー */}
       <TabBar />
     </SafeAreaView>
   );
 };
-
 
 
 // import React from "react";

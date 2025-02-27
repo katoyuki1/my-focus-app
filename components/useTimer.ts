@@ -14,39 +14,39 @@ export const useTimer = (initialTime: number = 1800) => {
 
   const startTimer = useCallback(() => {
     setIsActive(true);
+    console.log("🚀 Timer Started! isActive:", true);
   }, []);
 
   const stopTimer = useCallback(() => {
     setIsActive(false);
+    console.log("🛑 Timer Stopped! isActive:", false);
   }, []);
 
   const resetTimer = useCallback(() => {
     setIsActive(false);
     setTime(initialTime);
+    console.log("🔄 Timer Reset! isActive:", false);
   }, [initialTime]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    if (!isActive) return;
 
-    if (isActive && time > 0) {
-      interval = setInterval(() => {
-        setTime((currentTime) => {
-          if (currentTime <= 1) {
-            clearInterval(interval);
-            setIsActive(false);
-            return 0;
-          }
-          return currentTime - 1;
-        });
-      }, 1000);
-    }
+    console.log("⏳ Timer Running...");
 
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isActive, time]);
+    const interval = setInterval(() => {
+      setTime((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(interval);
+          setIsActive(false);
+          console.log("⏰ Timer Finished!");
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isActive]);
 
   return {
     time,

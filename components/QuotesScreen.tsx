@@ -6,6 +6,7 @@ export const QuotesScreen = () => {
   const [newQuote, setNewQuote] = useState("");
   const [quotes, setQuotes] = useState<string[]>([]);
 
+  // **名言をストレージから読み込む**
   useEffect(() => {
     const loadQuotes = async () => {
       try {
@@ -20,6 +21,7 @@ export const QuotesScreen = () => {
     loadQuotes();
   }, []);
 
+  // **名言を追加**
   const addQuote = async () => {
     if (newQuote.trim() !== "") {
       const updatedQuotes = [...quotes, newQuote];
@@ -34,6 +36,7 @@ export const QuotesScreen = () => {
     }
   };
 
+  // **名言を削除**
   const deleteQuote = async (index: number) => {
     const updatedQuotes = quotes.filter((_, i) => i !== index);
     setQuotes(updatedQuotes);
@@ -48,12 +51,7 @@ export const QuotesScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>名言リスト</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="新しい名言を入力"
-        value={newQuote}
-        onChangeText={setNewQuote}
-      />
+      <TextInput style={styles.input} placeholder="新しい名言を入力" value={newQuote} onChangeText={setNewQuote} />
       <Button title="名言を追加" onPress={addQuote} />
       <FlatList
         data={quotes}
@@ -71,6 +69,16 @@ export const QuotesScreen = () => {
     </View>
   );
 };
+
+// const styles = StyleSheet.create({
+//   container: { flex: 1, padding: 20, backgroundColor: "white" },
+//   title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
+//   input: { height: 40, borderColor: "#ccc", borderWidth: 1, paddingHorizontal: 10, marginBottom: 10, backgroundColor: "white" },
+//   flatList: { marginTop: 10 },
+//   quoteItem: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: "white", padding: 10, marginVertical: 5, borderWidth: 1, borderColor: "#ddd", borderRadius: 5 },
+//   deleteButton: { backgroundColor: "#ff5555", padding: 8, borderRadius: 5 },
+//   deleteButtonText: { color: "white", fontWeight: "bold" },
+// });
 
 const styles = StyleSheet.create({
   container: {
