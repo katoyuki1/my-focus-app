@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, SafeAreaView, Text } from "react-native";
 import { Header } from "./Header";
 import { TimerDisplay } from "./TimerDisplay";
@@ -7,13 +7,10 @@ import { useTimer } from "./useTimer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const FocusApp = () => {
-  // useTimer でタイマーを管理
   const { formattedTime, isActive, startTimer, stopTimer } = useTimer();
-  // quoteTimerActive は名言更新用の状態（isActive とは独立）
-  const [quoteTimerActive, setQuoteTimerActive] = useState(false);
   const [quote, setQuote] = useState(""); // 表示する名言
-  const [customQuotes, setCustomQuotes] = useState<string[]>([]); // ユーザー追加の名言
-  const quoteTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [customQuotes, setCustomQuotes] = useState<string[]>([]); // ユーザーが追加した名言
+  const quoteTimerRef = useRef<NodeJS.Timeout | null>(null); // 名言の変更を管理するタイマー
 
   const defaultQuotes = [
     "心が変われば行動が変わる",
@@ -21,22 +18,19 @@ export const FocusApp = () => {
     "小さいことを積み重ねる",
   ];
 
-  // 名言の保存データを読み込み、デフォルト名言と統合
+  // 名言を AsyncStorage から取得し、統合する
   useEffect(() => {
     const loadQuotes = async () => {
       try {
         const storedQuotes = await AsyncStorage.getItem("customQuotes");
         console.log("🔍 Stored Quotes from AsyncStorage:", storedQuotes);
-        let parsedQuotes: string[] = [];
-        if (storedQuotes) {
-          parsedQuotes = JSON.parse(storedQuotes);
-        }
-        const updatedQuotes = [...defaultQuotes, ...parsedQuotes];
+
+        let parsedQuotes: string[] = storedQuotes ? JSON.parse(storedQuotes) : [];
         setCustomQuotes(parsedQuotes);
+
+        const updatedQuotes = [...defaultQuotes, ...parsedQuotes];
+        setQuote(updatedQuotes[0]); // 最初の名言をセット
         console.log("🔍 All Quotes (merged):", updatedQuotes);
-        if (updatedQuotes.length > 0) {
-          setQuote(updatedQuotes[0]);
-        }
       } catch (error) {
         console.error("名言の読み込みに失敗:", error);
       }
@@ -44,13 +38,9 @@ export const FocusApp = () => {
     loadQuotes();
   }, []);
 
-  // mergedQuotes をメモ化（依存性管理）
-  const mergedQuotes = useMemo(() => [...defaultQuotes, ...customQuotes], [customQuotes]);
-
-  // 名言更新用のタイマーを、quoteTimerActive をトリガーに設定
+  // タイマーが動作中なら 10 秒ごとに名言を変更
   useEffect(() => {
-    console.log("⚡ useEffect for Quote Timer - quoteTimerActive:", quoteTimerActive, "Merged Quotes Count:", mergedQuotes.length);
-    if (!quoteTimerActive || mergedQuotes.length === 0) {
+    if (!isActive) {
       if (quoteTimerRef.current) {
         clearInterval(quoteTimerRef.current);
         quoteTimerRef.current = null;
@@ -58,13 +48,20 @@ export const FocusApp = () => {
       }
       return;
     }
-    // 新しいタイマーを開始
+
+    const allQuotes = [...defaultQuotes, ...customQuotes];
+
+    if (allQuotes.length > 0) {
+      setQuote(allQuotes[0]); // タイマー開始時に最初の名言をセット
+    }
+
+    console.log("🚀 Quote Interval Started");
     quoteTimerRef.current = setInterval(() => {
-      const randomIndex = Math.floor(Math.random() * mergedQuotes.length);
-      const newQuote = mergedQuotes[randomIndex];
+      const newQuote = allQuotes[Math.floor(Math.random() * allQuotes.length)];
       console.log("🔄 Changing Quote to:", newQuote);
       setQuote(newQuote);
     }, 10000);
+
     return () => {
       if (quoteTimerRef.current) {
         clearInterval(quoteTimerRef.current);
@@ -72,7 +69,7 @@ export const FocusApp = () => {
         console.log("🛑 Quote Timer Stopped (Cleanup)");
       }
     };
-  }, [quoteTimerActive, mergedQuotes]);
+  }, [isActive, customQuotes]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -84,15 +81,21 @@ export const FocusApp = () => {
           onStart={() => {
             console.log("🎯 Start Timer Pressed");
             startTimer();
-            setQuoteTimerActive(true); // タイマー開始時に名言更新も開始
           }}
           onStop={() => {
             console.log("🛑 Stop Timer Pressed");
             stopTimer();
-            setQuoteTimerActive(false); // タイマー停止時に名言更新も停止
           }}
         />
-        <Text style={{ fontSize: 18, fontStyle: "italic", textAlign: "center", marginVertical: 20, color: "#555" }}>
+        <Text
+          style={{
+            fontSize: 18,
+            fontStyle: "italic",
+            textAlign: "center",
+            marginVertical: 20,
+            color: "#555",
+          }}
+        >
           {quote}
         </Text>
       </View>
