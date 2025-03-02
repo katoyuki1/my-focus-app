@@ -8,9 +8,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const FocusApp = () => {
   const { formattedTime, isActive, startTimer, stopTimer } = useTimer();
-  const [quote, setQuote] = useState(""); // 表示する名言
-  const [customQuotes, setCustomQuotes] = useState<string[]>([]); // ユーザーが追加した名言
-  const quoteTimerRef = useRef<NodeJS.Timeout | null>(null); // 名言の変更を管理するタイマー
+  const [quote, setQuote] = useState(""); // 現在表示する名言
+  const [customQuotes, setCustomQuotes] = useState<string[]>([]); // ユーザー追加の名言
+  const quoteTimerRef = useRef<NodeJS.Timeout | null>(null); // 名言変更タイマーの管理
 
   const defaultQuotes = [
     "心が変われば行動が変わる",
@@ -18,7 +18,7 @@ export const FocusApp = () => {
     "小さいことを積み重ねる",
   ];
 
-  // 名言を AsyncStorage から取得し、統合する
+  // **名言を取得 & 初期化**
   useEffect(() => {
     const loadQuotes = async () => {
       try {
@@ -29,7 +29,10 @@ export const FocusApp = () => {
         setCustomQuotes(parsedQuotes);
 
         const updatedQuotes = [...defaultQuotes, ...parsedQuotes];
-        setQuote(updatedQuotes[0]); // 最初の名言をセット
+        if (updatedQuotes.length > 0) {
+          setQuote(updatedQuotes[0]); // 最初の名言をセット
+        }
+
         console.log("🔍 All Quotes (merged):", updatedQuotes);
       } catch (error) {
         console.error("名言の読み込みに失敗:", error);
@@ -38,7 +41,7 @@ export const FocusApp = () => {
     loadQuotes();
   }, []);
 
-  // タイマーが動作中なら 10 秒ごとに名言を変更
+  // **名言の変更ロジック**
   useEffect(() => {
     if (!isActive) {
       if (quoteTimerRef.current) {
@@ -56,11 +59,12 @@ export const FocusApp = () => {
     }
 
     console.log("🚀 Quote Interval Started");
+
     quoteTimerRef.current = setInterval(() => {
       const newQuote = allQuotes[Math.floor(Math.random() * allQuotes.length)];
       console.log("🔄 Changing Quote to:", newQuote);
       setQuote(newQuote);
-    }, 10000);
+    }, 10000); // 10秒ごとに変更
 
     return () => {
       if (quoteTimerRef.current) {
@@ -69,7 +73,7 @@ export const FocusApp = () => {
         console.log("🛑 Quote Timer Stopped (Cleanup)");
       }
     };
-  }, [isActive, customQuotes]);
+  }, [isActive, customQuotes.length]); // 🔹 `customQuotes.length` を追加
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
