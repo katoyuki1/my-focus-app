@@ -6,7 +6,10 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,6 +31,10 @@ const FocusScreen = () => {
   const [quote, setQuote] = useState("");
   const [customQuotes, setCustomQuotes] = useState<string[]>([]);
   const quoteTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedHours, setSelectedHours] = useState(0);
+  const [selectedMinutes, setSelectedMinutes] = useState(30);
+  const [selectedSeconds, setSelectedSeconds] = useState(0);
 
   // **時間を HHH:MM:SS の形式にフォーマット**
   const formatTime = (seconds: number) => {
@@ -93,6 +100,15 @@ const FocusScreen = () => {
     };
   }, [isRunning, customQuotes]);
 
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const applyTimeSetting = () => {
+    setTime(selectedHours * 3600 + selectedMinutes * 60 + selectedSeconds);
+    setModalVisible(false);
+  };
+
   const startTimer = () => {
     setIsRunning(true);
   };
@@ -107,11 +123,41 @@ const FocusScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <Header />
       <View style={styles.container}>
+        <Modal visible={modalVisible} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>時間を設定</Text>
+              <View style={styles.pickerContainer}>
+                <Picker selectedValue={selectedHours} onValueChange={(v) => setSelectedHours(v)} style={{ flex: 1 }}>
+                  {[...Array(24).keys()].map((h) => (
+                    <Picker.Item key={h} label={`${h} 時`} value={h} />
+                  ))}
+                </Picker>
+                <Picker selectedValue={selectedMinutes} onValueChange={(v) => setSelectedMinutes(v)} style={{ flex: 1 }}>
+                  {[...Array(60).keys()].map((m) => (
+                    <Picker.Item key={m} label={`${m} 分`} value={m} />
+                  ))}
+                </Picker>
+                <Picker selectedValue={selectedSeconds} onValueChange={(v) => setSelectedSeconds(v)} style={{ flex: 1 }}>
+                  {[...Array(60).keys()].map((s) => (
+                    <Picker.Item key={s} label={`${s} 秒`} value={s} />
+                  ))}
+                </Picker>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button title="OK" onPress={applyTimeSetting} />
+                <Button title="キャンセル" onPress={() => setModalVisible(false)} />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         {/* 名言をタイマーの上に移動 & フォントサイズを調整 */}
         <Text style={styles.quote}>{quote}</Text>
         <Text style={styles.timer}>{formatTime(time)}</Text>
         <Button title="スタート" onPress={startTimer} disabled={isRunning} />
         <Button title="リセット" onPress={resetTimer} />
+        <Button title="時間を設定" onPress={openModal} />
       </View>
     </SafeAreaView>
   );
@@ -168,6 +214,35 @@ const styles = StyleSheet.create({
   tabBarContainer: {
     height: 80, // ナビゲーションの高さを確保
     justifyContent: "flex-end",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: "90%",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  pickerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    marginTop: 20,
+    justifyContent: "space-around",
+    width: "100%",
   },
 });
 
