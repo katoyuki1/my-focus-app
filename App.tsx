@@ -20,13 +20,13 @@ import "./global.css";
 const Tab = createBottomTabNavigator();
 
 const defaultQuotes = [
-  "心が変われば行動が変わる",
+  "行動が変われば心が変わる",
   "人は習慣によってつくられる",
   "小さいことを積み重ねる",
 ];
 
 const FocusScreen = () => {
-  const [time, setTime] = useState(1800);
+  const [time, setTime] = useState(600); // 10分
   const [isRunning, setIsRunning] = useState(false);
   const [quote, setQuote] = useState("");
   const [customQuotes, setCustomQuotes] = useState<string[]>([]);
@@ -114,7 +114,7 @@ const FocusScreen = () => {
   };
 
   const resetTimer = () => {
-    setTime(1800);
+    setTime(600);
     setIsRunning(false);
     setQuote("");
   };
@@ -155,9 +155,21 @@ const FocusScreen = () => {
         {/* 名言をタイマーの上に移動 & フォントサイズを調整 */}
         <Text style={styles.quote}>{quote}</Text>
         <Text style={styles.timer}>{formatTime(time)}</Text>
-        <Button title="スタート" onPress={startTimer} disabled={isRunning} />
-        <Button title="リセット" onPress={resetTimer} />
-        <Button title="時間を設定" onPress={openModal} />
+        {/* <Button title="スタート" onPress={startTimer} disabled={isRunning} />
+        <Button title="リセット" onPress={resetTimer} /> */}
+        <TouchableOpacity
+          style={[styles.button, isRunning ? styles.buttonStop : styles.buttonStart]}
+          onPress={isRunning ? resetTimer : startTimer}
+        >
+          <Text style={styles.buttonText}>{isRunning ? "ストップ" : "スタート"}</Text>
+        </TouchableOpacity>
+        {/* <Button title="時間を設定" onPress={openModal} /> */}
+        <TouchableOpacity
+          style={styles.settingButton}
+          onPress={openModal}
+        >
+          <Text style={styles.settingButtonText}>時間を設定</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -243,6 +255,40 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: "space-around",
     width: "100%",
+  },
+  button: {
+    width: "80%",
+    paddingVertical: 15,
+    borderRadius: 30, // 丸っぽい形
+    alignItems: "center",
+  },
+
+  buttonStart: {
+    backgroundColor: "#3B82F6", // 青色
+  },
+
+  buttonStop: {
+    backgroundColor: "#EF4444", // 赤色（停止時）
+  },
+
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  settingButton: {
+    width: "80%",
+    paddingVertical: 15,
+    borderRadius: 30,
+    borderWidth: 2, // 境界線
+    borderColor: "#3B82F6", // スタートボタンと同じ青色
+    alignItems: "center",
+    marginTop: 10, // スタートボタンとの間隔
+  },
+  settingButtonText: {
+    color: "#3B82F6", // 青色
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 
