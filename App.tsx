@@ -17,6 +17,7 @@ import { Header } from "./components/Header";
 import { QuotesScreen } from "./components/QuotesScreen";
 import "./global.css";
 
+// 通知処理を入れる
 const Tab = createBottomTabNavigator();
 
 const defaultQuotes = [
