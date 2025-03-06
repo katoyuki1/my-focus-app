@@ -8,6 +8,8 @@ import {
   Image,
   Modal,
   TouchableOpacity,
+  AppState,
+  AppStateStatus
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { NavigationContainer } from "@react-navigation/native";
@@ -16,15 +18,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Header } from "./components/Header";
 import { QuotesScreen } from "./components/QuotesScreen";
 import "./global.css";
+import * as Notifications from "expo-notifications";  // 追加
+import * as Device from "expo-device";  // 追加
 
-// 通知処理を入れる
 const Tab = createBottomTabNavigator();
 
 const defaultQuotes = [
+  "スマホを閉じてやるべきことに集中しよう！",
   "行動が変われば心が変わる",
   "人は習慣によってつくられる",
   "小さいことを積み重ねる",
 ];
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const FocusScreen = () => {
   const [time, setTime] = useState(600); // 10分
@@ -36,6 +48,52 @@ const FocusScreen = () => {
   const [selectedHours, setSelectedHours] = useState(0);
   const [selectedMinutes, setSelectedMinutes] = useState(30);
   const [selectedSeconds, setSelectedSeconds] = useState(0);
+  const appState = useRef(AppState.currentState); // ✅ useEffectの外で定義
+
+
+useEffect(() => {
+  async function registerForPushNotificationsAsync() {
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        console.log("通知の権限が拒否されました");
+        return;
+      }
+    } else {
+      console.log("実機でのみ通知が機能します");
+    }
+  }
+  registerForPushNotificationsAsync();
+}, []);
+
+useEffect(() => {
+  const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+    if (appState.current.match(/active/) && nextAppState === "background" && isRunning) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "誘惑に負けてませんか？",
+          body: "集中する？",
+        },
+        trigger: {
+          seconds: 1,
+          repeats: false,
+        },
+      });
+    }
+    appState.current = nextAppState;
+  };
+
+  const subscription = AppState.addEventListener("change", handleAppStateChange);
+
+  return () => {
+    subscription.remove();
+  };
+}, [isRunning]);
 
   // **時間を HHH:MM:SS の形式にフォーマット**
   const formatTime = (seconds: number) => {
@@ -101,6 +159,32 @@ const FocusScreen = () => {
     };
   }, [isRunning, customQuotes]);
 
+  // ❶ タイマー終了処理: time が 1秒以下になったら 0 にセットして isRunning を止める
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isRunning && time > 0) {
+      timer = setInterval(() => {
+        setTime((prevTime) => {
+          if (prevTime <= 1) {
+            setIsRunning(false);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    } else {
+      setIsRunning(false);
+    }
+    return () => clearInterval(timer);
+  }, [isRunning, time]);
+
+  // ❷ time が 0 になったらメッセージを表示
+  useEffect(() => {
+    if (time === 0) {
+      setQuote("おめでとうございます🎉あなたは目の前のことに集中できました！");
+    }
+  }, [time]);
+
   const openModal = () => {
     setModalVisible(true);
   };
@@ -129,19 +213,33 @@ const FocusScreen = () => {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>時間を設定</Text>
               <View style={styles.pickerContainer}>
-                <Picker selectedValue={selectedHours} onValueChange={(v) => setSelectedHours(v)} style={{ flex: 1 }}>
+                <Picker
+                  selectedValue={selectedHours.toString()}
+                  onValueChange={(v) => setSelectedHours(Number(v))}
+                  style={{ width: 100 }}  // ✅ 幅を指定
+                >
                   {[...Array(24).keys()].map((h) => (
-                    <Picker.Item key={h} label={`${h} 時`} value={h} />
+                    <Picker.Item key={h} label={`${h} 時`} value={h.toString()} />
                   ))}
                 </Picker>
-                <Picker selectedValue={selectedMinutes} onValueChange={(v) => setSelectedMinutes(v)} style={{ flex: 1 }}>
+
+                <Picker
+                  selectedValue={selectedMinutes.toString()}
+                  onValueChange={(v) => setSelectedMinutes(Number(v))}
+                  style={{ width: 100 }}  // ✅ 幅を指定
+                >
                   {[...Array(60).keys()].map((m) => (
-                    <Picker.Item key={m} label={`${m} 分`} value={m} />
+                    <Picker.Item key={m} label={`${m} 分`} value={m.toString()} />
                   ))}
                 </Picker>
-                <Picker selectedValue={selectedSeconds} onValueChange={(v) => setSelectedSeconds(v)} style={{ flex: 1 }}>
+
+                <Picker
+                  selectedValue={selectedSeconds.toString()}
+                  onValueChange={(v) => setSelectedSeconds(Number(v))}
+                  style={{ width: 100 }}  // ✅ 幅を指定
+                >
                   {[...Array(60).keys()].map((s) => (
-                    <Picker.Item key={s} label={`${s} 秒`} value={s} />
+                    <Picker.Item key={s} label={`${s} 秒`} value={s.toString()} />
                   ))}
                 </Picker>
               </View>
@@ -156,15 +254,12 @@ const FocusScreen = () => {
         {/* 名言をタイマーの上に移動 & フォントサイズを調整 */}
         <Text style={styles.quote}>{quote}</Text>
         <Text style={styles.timer}>{formatTime(time)}</Text>
-        {/* <Button title="スタート" onPress={startTimer} disabled={isRunning} />
-        <Button title="リセット" onPress={resetTimer} /> */}
         <TouchableOpacity
           style={[styles.button, isRunning ? styles.buttonStop : styles.buttonStart]}
           onPress={isRunning ? resetTimer : startTimer}
         >
           <Text style={styles.buttonText}>{isRunning ? "ストップ" : "スタート"}</Text>
         </TouchableOpacity>
-        {/* <Button title="時間を設定" onPress={openModal} /> */}
         <TouchableOpacity
           style={styles.settingButton}
           onPress={openModal}
@@ -247,8 +342,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   pickerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "row",  // ✅ 横に並べる
+    justifyContent: "center",
+    alignItems: "center",
     width: "100%",
   },
   buttonContainer: {
