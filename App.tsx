@@ -18,8 +18,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Header } from "./components/Header";
 import { QuotesScreen } from "./components/QuotesScreen";
 import "./global.css";
-import * as Notifications from "expo-notifications";  // 追加
-import * as Device from "expo-device";  // 追加
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 
 const Tab = createBottomTabNavigator();
 
