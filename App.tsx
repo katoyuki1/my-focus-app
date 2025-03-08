@@ -48,7 +48,7 @@ const FocusScreen = () => {
   const [selectedHours, setSelectedHours] = useState(0);
   const [selectedMinutes, setSelectedMinutes] = useState(30);
   const [selectedSeconds, setSelectedSeconds] = useState(0);
-  const appState = useRef(AppState.currentState); // ✅ useEffectの外で定義
+  const appState = useRef(AppState.currentState); //  useEffectの外で定義
 
 
 useEffect(() => {
