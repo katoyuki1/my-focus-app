@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "simple-focus",
-    "slug": "simple-focus",
+    "name": "my-focus-app",
+    "slug": "my-focus-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,14 +16,19 @@
       "bundleIdentifier": "com.yuki.simplefocus",
       "supportsTablet": true,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.yuki.simplefocus"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +38,7 @@
       "eas": {
         "projectId": "56c79cf1-82f7-47ab-811c-06d5eb96a9db"
       }
-    }
+    },
+    "owner": "yuki_kato"
   }
 }
