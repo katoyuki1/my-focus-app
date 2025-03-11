@@ -216,30 +216,30 @@ useEffect(() => {
                 <Picker
                   selectedValue={selectedHours.toString()}
                   onValueChange={(v) => setSelectedHours(Number(v))}
-                  style={{ width: 100 }}  // ✅ 幅を指定
+                  style={{ width: 120 }}  // ✅ 幅を指定
                 >
-                  {[...Array(24).keys()].map((h) => (
-                    <Picker.Item key={h} label={`${h} 時`} value={h.toString()} />
+                  {[...Array(1000).keys()].map((h) => (
+                    <Picker.Item key={h} label={`${h}時`} value={h.toString()} />
                   ))}
                 </Picker>
 
                 <Picker
                   selectedValue={selectedMinutes.toString()}
                   onValueChange={(v) => setSelectedMinutes(Number(v))}
-                  style={{ width: 100 }}  // ✅ 幅を指定
+                  style={{ width: 120 }}  // ✅ 幅を指定
                 >
                   {[...Array(60).keys()].map((m) => (
-                    <Picker.Item key={m} label={`${m} 分`} value={m.toString()} />
+                    <Picker.Item key={m} label={`${m}分`} value={m.toString()} />
                   ))}
                 </Picker>
 
                 <Picker
                   selectedValue={selectedSeconds.toString()}
                   onValueChange={(v) => setSelectedSeconds(Number(v))}
-                  style={{ width: 100 }}  // ✅ 幅を指定
+                  style={{ width: 120 }}  // ✅ 幅を指定
                 >
                   {[...Array(60).keys()].map((s) => (
-                    <Picker.Item key={s} label={`${s} 秒`} value={s.toString()} />
+                    <Picker.Item key={s} label={`${s}秒`} value={s.toString()} />
                   ))}
                 </Picker>
               </View>
