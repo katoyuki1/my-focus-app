@@ -50,7 +50,7 @@ const FocusScreen = () => {
   const [selectedSeconds, setSelectedSeconds] = useState(0);
   const appState = useRef(AppState.currentState); //  useEffectの外で定義
 
-
+// 通知機能の登録
 useEffect(() => {
   async function registerForPushNotificationsAsync() {
     if (Device.isDevice) {
