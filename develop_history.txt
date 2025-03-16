@@ -1,0 +1,66 @@
+[3/16]
+・値段を無料に設定した
+・その他情報を追加
+・今日か明日に審査を提出する
+
+[3/15]
+・ipadのscreenshotを、用意した。
+・プライバシーポリシーをGithubpagsで用意した。
+
+[3/14]
+ビルドのエラー解消を進めた。
+You must upload a screenshot for 13-inch iPad displays.
+ipadのscreenshotを、用意
+
+[3/11]
+・シュミレーターをiPhone 14 Pro Maxに変更。GPTで手順を確認すること
+
+[3/9]
+app.jsonメモ
+    "extra": {
+      "eas": {
+        "projectId": "56c79cf1-82f7-47ab-811c-06d5eb96a9db"
+      }
+    }
+
+「2025/3/5」
+・Notification処理の実装でつまづいた。
+・expo npmなど、パッケージ管理がよくわかっていない。どこかでQIita記事にする
+
+「2025/3/4」
+・ボタンを格好良くした。
+・実機を使ってテスト。明日はアプリから離れたときにアラートが表示するようにする。できなければ諦める。現在はUIが変。画像のすみの方に出ている気がする。
+
+「2025/3/3」
+・モーダル画面でタイマーを作る
+
+「2025/3/2」
+・FucusApp.tsxを使うのをやめる。
+・結局原因はわからないので、以前のコードに戻す。
+・タイマーの設定をユーザーが手入力で変えられるように変更する。
+
+
+「2025/3/1」
+・名言が変更できない。メンタルがやばい。
+
+「2025/2/28」
+・名言の変更につまづく。Udemyを見る
+
+「2025/2/27」
+・名言は表示されるようになった。
+・切り替わらない。
+・コードを理解する。ようにする。明日は分析
+
+「2025/2/26」
+・› Press ? │ show all commands
+iOS Bundled 7866ms index.ts (1077 modules)
+ (NOBRIDGE) LOG  Bridgeless mode is enabled
+ INFO  
+ 💡 JavaScript logs will be removed from Metro in React Native 0.77! Please use React Native DevTools as your default tool. Tip: Type j in the terminal to open (requires Google Chrome or Microsoft Edge).
+ (NOBRIDGE) LOG  Stored Quotes: ["ねこ","たなか"]
+
+登録した名言しか表示されない。
+名言が表示されない
+
+「2025/2/25」
+・何をするか？今の問題点は？どこまでやったらリリースできるか。やるべきことを整理する。
