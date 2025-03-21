@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "simplefocus.app"
-               BlueprintName = "simplefocus"
-               ReferencedContainer = "container:simplefocus.xcodeproj">
+               BuildableName = "myfocusapp.app"
+               BlueprintName = "myfocusapp"
+               ReferencedContainer = "container:myfocusapp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "simplefocusTests.xctest"
-               BlueprintName = "simplefocusTests"
-               ReferencedContainer = "container:simplefocus.xcodeproj">
+               BuildableName = "myfocusappTests.xctest"
+               BlueprintName = "myfocusappTests"
+               ReferencedContainer = "container:myfocusapp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "simplefocus.app"
-            BlueprintName = "simplefocus"
-            ReferencedContainer = "container:simplefocus.xcodeproj">
+            BuildableName = "myfocusapp.app"
+            BlueprintName = "myfocusapp"
+            ReferencedContainer = "container:myfocusapp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "simplefocus.app"
-            BlueprintName = "simplefocus"
-            ReferencedContainer = "container:simplefocus.xcodeproj">
+            BuildableName = "myfocusapp.app"
+            BlueprintName = "myfocusapp"
+            ReferencedContainer = "container:myfocusapp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

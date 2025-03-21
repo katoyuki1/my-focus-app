@@ -1,4 +1,9 @@
-
+[3/21]
+・iosフォルダ配下のInfoファイルでBundleVerionを1.0.1に変更した
+・eas build --profile production --platform iosでipaファイルを作成後、 Transporterでアップロード
+・App Store ContentでTestFlightでテスト
+・Distributionで左上の+ボタンで新しいVersionを作成。
+・「What's New in This Version」を入力して、審査に提出
 
 [3/20]
 ・iconの作成

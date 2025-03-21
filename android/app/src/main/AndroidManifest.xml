@@ -25,6 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.yuki.simplefocus"/>
+        <data android:scheme="exp+my-focus-app"/>
       </intent-filter>
     </activity>
   </application>

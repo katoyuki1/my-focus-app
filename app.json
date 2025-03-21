@@ -2,7 +2,7 @@
   "expo": {
     "name": "my-focus-app",
     "slug": "my-focus-app",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,6 +16,7 @@
       "bundleIdentifier": "com.yuki.simplefocus",
       "supportsTablet": true,
       "infoPlist": {
+        "CFBundleShortVersionString": "1.0.1",
         "ITSAppUsesNonExemptEncryption": false,
         "UIBackgroundModes": [
           "fetch",
