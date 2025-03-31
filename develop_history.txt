@@ -1,3 +1,9 @@
+[3/31]
+・アカウント機能の実装を開始した
+
+[3/27]
+。
+
 [3/21]
 ・iosフォルダ配下のInfoファイルでBundleVerionを1.0.1に変更した
 ・eas build --profile production --platform iosでipaファイルを作成後、 Transporterでアップロード
