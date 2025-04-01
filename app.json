@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -40,6 +39,9 @@
         "projectId": "56c79cf1-82f7-47ab-811c-06d5eb96a9db"
       }
     },
-    "owner": "yuki_kato"
+    "owner": "yuki_kato",
+    "updates": {
+      "enabled": false
+    }
   }
 }
