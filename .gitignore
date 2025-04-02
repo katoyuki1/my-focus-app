@@ -38,3 +38,5 @@ yarn-error.*
 release_step.txt
 
 build-output/
+
+.env
