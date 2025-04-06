@@ -8,5 +8,9 @@
     <false/>
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
+    <key>EXUpdatesSDKVersion</key>
+    <string>49.0.0</string>
+    <key>EXUpdatesURL</key>
+    <string>https://exp.host/@yuki_kato/my-focus-app</string>
   </dict>
 </plist>

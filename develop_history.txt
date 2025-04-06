@@ -84,3 +84,13 @@ iOS Bundled 7866ms index.ts (1077 modules)
 
 「2025/2/25」
 ・何をするか？今の問題点は？どこまでやったらリリースできるか。やるべきことを整理する。
+
+interface User {
+  id: string;
+  email: string;
+  username: string;
+  createdAt: Date;
+  updatedAt: Date;
+  // 将来的な拡張用
+  authProvider: 'email' | 'google' | null;
+}

@@ -17,6 +17,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Header } from "./components/Header";
 import { QuotesScreen } from "./components/QuotesScreen";
+import { AuthProvider, useAuth } from "./components/auth/AuthProvider";
+import { SignUpForm } from "./components/auth/SignUpForm";
+import { LoginForm } from "./components/auth/LoginForm";
 import "./global.css";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
@@ -80,6 +83,7 @@ useEffect(() => {
           body: "集中する？",
         },
         trigger: {
+          type: 'timeInterval',
           seconds: 1,
           repeats: false,
         },
@@ -271,7 +275,45 @@ useEffect(() => {
   );
 };
 
-export default function App() {
+const AuthScreen = () => {
+  const [isLogin, setIsLogin] = useState(true);
+
+  return (
+    <View style={styles.authContainer}>
+      {isLogin ? (
+        <>
+          <LoginForm />
+          <TouchableOpacity onPress={() => setIsLogin(false)}>
+            <Text style={styles.authSwitchText}>アカウントをお持ちでない方はこちら</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <SignUpForm />
+          <TouchableOpacity onPress={() => setIsLogin(true)}>
+            <Text style={styles.authSwitchText}>すでにアカウントをお持ちの方はこちら</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  );
+};
+
+const AppContent = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>読み込み中...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return <AuthScreen />;
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -293,6 +335,14 @@ export default function App() {
         <Tab.Screen name="Quotes" component={QuotesScreen} />
       </Tab.Navigator>
     </NavigationContainer>
+  );
+};
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
@@ -386,6 +436,21 @@ const styles = StyleSheet.create({
     color: "#3B82F6", // 青色
     fontSize: 18,
     fontWeight: "bold",
+  },
+  authContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  authSwitchText: {
+    color: '#007AFF',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
