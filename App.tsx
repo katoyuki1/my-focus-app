@@ -120,18 +120,7 @@ useEffect(() => {
     loadQuotes();
   }, []);
 
-  // useEffect(() => {
-  //   let timer: NodeJS.Timeout;
-  //   if (isRunning && time > 0) {
-  //     timer = setInterval(() => {
-  //       setTime((prevTime) => prevTime - 1);
-  //     }, 1000);
-  //   } else {
-  //     setIsRunning(false);
-  //   }
-  //   return () => clearInterval(timer);
-  // }, [isRunning, time]);
-
+  // 名言の表示処理
   useEffect(() => {
     if (!isRunning) {
       if (quoteTimerRef.current) {
@@ -160,24 +149,22 @@ useEffect(() => {
     };
   }, [isRunning, customQuotes]);
 
-  // ❶ タイマー終了処理: time が 1秒以下になったら 0 にセットして isRunning を止める
-  // useEffect(() => {
-  //   let timer: NodeJS.Timeout;
-  //   if (isRunning && time > 0) {
-  //     timer = setInterval(() => {
-  //       setTime((prevTime) => {
-  //         if (prevTime <= 1) {
-  //           setIsRunning(false);
-  //           return 0;
-  //         }
-  //         return prevTime - 1;
-  //       });
-  //     }, 1000);
-  //   } else {
-  //     setIsRunning(false);
-  //   }
-  //   return () => clearInterval(timer);
-  // }, [isRunning, time]);
+  // タイマー処理
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isRunning && endTime !== null) {
+      timer = setInterval(() => {
+        // 残り秒数を算出
+        const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        setTime(remaining);
+        // 残り時間が0になったらタイマー停止
+        if (remaining <= 0) {
+          setIsRunning(false);
+        }
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isRunning, endTime]);
 
   // ❷ time が 0 になったらメッセージを表示
   useEffect(() => {
@@ -207,23 +194,6 @@ useEffect(() => {
     setEndTime(null);
     setQuote("");
   };
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isRunning && endTime !== null) {
-      timer = setInterval(() => {
-        // 残り秒数を算出
-        const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
-        setTime(remaining);
-        // 残り時間が0になったらタイマー停止
-        if (remaining <= 0) {
-          setIsRunning(false);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isRunning, endTime]);
-
 
   return (
     <SafeAreaView style={styles.safeArea}>
