@@ -1,0 +1,94 @@
+了解しました！
+React Native または Expo アプリで、ローカルのコード変更を App Store のアプリに反映する手順を、完全なステップバイステップでまとめますね。
+
+⸻
+
+✅ 前提
+	•	Apple Developer アカウントがある（$99/年）
+	•	eas build などで iOS ビルドを作れる状態
+	•	すでに App Store に1回アプリを公開済み
+
+⸻
+
+✅ ローカル変更を App Store に反映するための流れ
+
+⸻
+
+🛠 ステップ 1：コードを修正・保存
+	1.	App.tsx などを修正
+	2.	問題なく動作することを iOS シミュレーター or 実機で確認
+（npx expo start → QR コード or npm run ios など）
+
+⸻
+
+🧱 ステップ 2：eas build で iOS アプリを再ビルド
+
+eas build -p ios --profile production
+
+📝 このとき、前回と同じバージョンでも「ビルド番号（buildNumber）」を上げる必要があります。
+eas.json ファイルで以下のように設定できます：
+
+// eas.json
+{
+  "build": {
+    "production": {
+      "ios": {
+        "buildNumber": "2" // 前回が1なら今回は2に！
+      }
+    }
+  }
+}
+
+
+
+⸻
+
+📨 ステップ 3：ビルドが完了したら .ipa をダウンロード
+	•	eas build 完了後に出る URL をクリックしてビルドファイル（.ipa）を取得
+
+⸻
+
+🚚 ステップ 4：Transporter を使ってアップロード
+	1.	Mac App Store から Transporter を開く
+	2.	Apple ID でログイン
+	3.	.ipa ファイルをドラッグ＆ドロップ
+	4.	「Deliver（配送）」ボタンをクリック
+
+⸻
+
+🔄 ステップ 5：App Store Connect にログインして新ビルドを選択
+	1.	App Store Connect にログイン
+	2.	対象アプリを選択
+	3.	「App Store」→「iOS App」→「+ バージョンを追加」（例：1.0.2）
+	4.	Build が Processing → Ready になったら選択
+	5.	スクリーンショット・説明文・What’s New などを記入
+
+⸻
+
+📮 ステップ 6：審査に提出（Submit for Review）
+	1.	必須項目をすべて埋めると「審査に提出」ボタンが出現
+	2.	Apple に申請（通常は数時間〜1日で審査）
+
+⸻
+
+✅ ステップ 7：App Store に公開されるのを待つ
+	•	審査通過後、「Ready for Sale」となり App Store に公開されます。
+
+⸻
+
+🎯 まとめ：最低限のコマンド一覧
+
+# iOSプロダクションビルド
+eas build -p ios --profile production
+
+// eas.json（buildNumberを変更）
+"ios": {
+  "buildNumber": "2"
+}
+
+
+
+⸻
+
+必要であれば、あなたの eas.json を見て一緒に設定してもOKです！
+「次にやるべきこと」を一緒に進めましょうか？
