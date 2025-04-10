@@ -16,7 +16,7 @@
       "bundleIdentifier": "com.yuki.simplefocus",
       "supportsTablet": true,
       "infoPlist": {
-        "CFBundleShortVersionString": "1.0.1",
+        "CFBundleShortVersionString": "1.0.2",
         "ITSAppUsesNonExemptEncryption": false,
         "UIBackgroundModes": [
           "fetch",
