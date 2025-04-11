@@ -39,7 +39,13 @@ eas.json ファイルで以下のように設定できます：
   }
 }
 
+// Info.plistのVersionを上げる
+<key>CFBundleShortVersionString</key>
+<string>1.0.2</string>
 
+// ビルド番号を上げる
+<key>CFBundleVersion</key>
+<string>2</string>
 
 ⸻
 
